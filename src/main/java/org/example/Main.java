@@ -95,7 +95,7 @@ public class Main {
             }
             case 4 -> {
                 Vehicle v = vRepo.getVehicle(user.getRentedVehicleId());
-                System.out.println("Użytkownik: " + user.getLogin() + " | Wypożyczony pojazd: " + (v != null ? v : "Brak"));
+                System.out.println("Użytkownik " + user.getLogin() + " | Wypożyczony pojazd " + (v != null ? v : "Brak"));
             }
             case 5 -> {
                 return false;
