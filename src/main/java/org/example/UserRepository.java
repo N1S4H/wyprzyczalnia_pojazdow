@@ -46,7 +46,12 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public boolean register(String login, String password) {
-
+        if(getUser(login) != null){
+            System.out.println("Uzytkownik o tym loginie juz istnieje");
+            return false;
+        }
+        String hashedPassword = Authentication.hashPassword(password);
+        User newUser = new User(login, hashedPassword, "USER", "null");
     }
 
     @Override
