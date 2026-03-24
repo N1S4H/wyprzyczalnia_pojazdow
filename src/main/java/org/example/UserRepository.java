@@ -45,7 +45,34 @@ public class UserRepository implements IUserRepository{
     }
 
     @Override
-    public void save() throws IOException {
+    public boolean register(String login, String password) {
+
+    }
+
+    @Override
+    public boolean removeUser(String login) throws IOException {
+        User user = getUser(login);
+
+        if(user==null){
+            System.out.println("Uzytkownik " + login + " nie istnieje");
+            return false;
+        }
+
+        if(user.getRentedVehicleId() != null && !user.getRentedVehicleId().equals("null")){
+            System.out.println("Nie mozna usunac uzytkownika " + login + ", poniewaz posiada wypozyczony pojazd");
+            return false;
+        }
+
+        boolean removed = users.removeIf(u -> u.getLogin().equals(login));
+        if(removed) {
+            save();
+            System.out.println("Uzytkownik " + login + " zostal usuniety");
+        }
+        return removed;
+    }
+
+
+    private void save() throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))){
             for (User u : users){
                 writer.println(u.getLogin() + ";" + u.getPassword() + ";" + u.getRole() + ";" + u.getRentedVehicleId());
@@ -55,8 +82,7 @@ public class UserRepository implements IUserRepository{
         }
     }
 
-    @Override
-    public void load() throws FileNotFoundException {
+    private void load() throws FileNotFoundException {
         users.clear();
         File file = new File(fileName);
         if (!file.exists()){

@@ -94,8 +94,7 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
         return removed;
     }
 
-    @Override
-    public void save() {
+    private void save() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))){
             for (Vehicle v : vehicles){
                 writer.println(v.toCSV());
@@ -105,8 +104,7 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
         }
     }
 
-    @Override
-    public void load() {
+    private void load() {
         vehicles.clear();
         File file = new File(fileName);
 
