@@ -8,6 +8,6 @@ public interface IUserRepository {
     User getUser(String login);
     List<User> getUsers();
     boolean update(User user) throws IOException;
-    boolean register(String login, String password);
+    boolean register(String login, String password) throws IOException;
     boolean removeUser(String login) throws IOException;
 }

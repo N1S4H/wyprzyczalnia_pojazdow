@@ -11,39 +11,53 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("--- SYSTEM WYPOŻYCZALNI POJAZDÓW ---");
+        System.out.print("1.Rejestracja.\n");
+        System.out.print("2.Logowanie.\n");
+        System.out.print("Wybor: ");
+        int choice = scanner.nextInt();
 
-        System.out.print("Login: ");
-        String login = scanner.next();
-        System.out.print("Hasło: ");
-        String password = scanner.next();
+        if(choice == 1){
+            System.out.print("Login: ");
+            String login = scanner.next();
+            System.out.print("Hasło: ");
+            String password = scanner.next();
 
-        User currentUser = auth.authenticate(login, password);
+            User currentUser = auth.authenticate(login, password);
 
-        if (currentUser != null) {
-            System.out.println("\nZalogowano pomyślnie jako: " + currentUser.getRole());
+            if (currentUser != null) {
+                System.out.println("\nZalogowano pomyślnie jako: " + currentUser.getRole());
 
-            boolean running = true;
-            while (running) {
-                if (currentUser.getRole().equals("ADMIN")) {
-                    running = showAdminMenu(scanner, vehicleRepo, userRepo);
-                } else {
-                    running = showUserMenu(scanner, vehicleRepo, userRepo, currentUser);
+                boolean running = true;
+                while (running) {
+                    if (currentUser.getRole().equals("ADMIN")) {
+                        running = showAdminMenu(scanner, vehicleRepo, userRepo);
+                    } else {
+                        running = showUserMenu(scanner, vehicleRepo, userRepo, currentUser);
+                    }
                 }
+            } else {
+                System.out.println("Błąd logowania! Nieprawidłowy login lub hasło.");
             }
-        } else {
-            System.out.println("Błąd logowania! Nieprawidłowy login lub hasło.");
-        }
 
+        } else if(choice == 2){
+            System.out.println("Podaj nowy login: ");
+            String newLogin = scanner.next();
+            System.out.println("Podaj nowe haslo: ");
+            String newPassword = scanner.next();
+
+            userRepo.register(newLogin, newPassword);
+        }
         scanner.close();
     }
 
-    private static boolean showAdminMenu(Scanner sc, IVehicleRepository vRepo, IUserRepository uRepo) {
+    private static boolean showAdminMenu(Scanner sc, IVehicleRepository vRepo, IUserRepository uRepo) throws IOException {
         System.out.println("\n--- MENU ADMINA ---");
         System.out.println("1. Lista pojazdów");
         System.out.println("2. Lista użytkowników i ich wypożyczeń");
         System.out.println("3. Dodaj pojazd");
         System.out.println("4. Usuń pojazd");
-        System.out.println("5. Wyjdź");
+        System.out.println("5. Usuń uzytkownika ");
+        System.out.println("6. Wyjdź");
         System.out.print("Wybierz: ");
 
         int choice = sc.nextInt();
@@ -59,6 +73,11 @@ public class Main {
                 if (vRepo.remove(id)) System.out.println("Usunięto.");
             }
             case 5 -> {
+                System.out.print("Podaj login użytkownika do usunięcia: ");
+                String loginToRemove = sc.next();
+                uRepo.removeUser(loginToRemove);
+            }
+            case 6 -> {
                 return false;
             }
         }
