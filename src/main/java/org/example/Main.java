@@ -12,7 +12,6 @@ public class Main {
 
         System.out.println("--- SYSTEM WYPOŻYCZALNI POJAZDÓW ---");
 
-        // 1. LOGOWANIE
         System.out.print("Login: ");
         String login = scanner.next();
         System.out.print("Hasło: ");
@@ -38,7 +37,6 @@ public class Main {
         scanner.close();
     }
 
-    // --- MENU DLA ADMINA ---
     private static boolean showAdminMenu(Scanner sc, IVehicleRepository vRepo, IUserRepository uRepo) {
         System.out.println("\n--- MENU ADMINA ---");
         System.out.println("1. Lista pojazdów");
@@ -53,7 +51,6 @@ public class Main {
             case 1 -> vRepo.getVehicles().forEach(System.out::println);
             case 2 -> uRepo.getUsers().forEach(u -> System.out.println(u.getLogin() + " - Wypożyczone ID: " + u.getRentedVehicleId()));
             case 3 -> {
-                // Tu możesz dodać logikę tworzenia nowego auta
                 System.out.println("Funkcja dodawania w przygotowaniu...");
             }
             case 4 -> {
@@ -68,7 +65,6 @@ public class Main {
         return true;
     }
 
-    // --- MENU DLA UŻYTKOWNIKA ---
     private static boolean showUserMenu(Scanner sc, IVehicleRepository vRepo, IUserRepository uRepo, User user) throws IOException {
         System.out.println("\n--- MENU UŻYTKOWNIKA ---");
         System.out.println("1. Lista dostępnych pojazdów");
@@ -86,7 +82,7 @@ public class Main {
                 String id = sc.next();
                 if (vRepo.rentVehicle(id)) {
                     user.setRentedVehicleId(id);
-                    uRepo.update(user); // Zapisujemy info o wypożyczeniu u usera
+                    uRepo.update(user);
                     System.out.println("Wypożyczono!");
                 }
             }
