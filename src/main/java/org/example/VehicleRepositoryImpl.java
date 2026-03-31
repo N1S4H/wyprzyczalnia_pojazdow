@@ -87,6 +87,16 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
 
     @Override
     public boolean remove(String id) {
+        Vehicle vehicle = getVehicle(id);
+
+        if (vehicle == null){
+            System.out.println("Ten pojazd nie istnieje.");
+            return false;
+        }
+        if(vehicle.isRented()){
+            System.out.println("Pojazd jest obecnie wypozyczony.");
+            return false;
+        }
         boolean removed = vehicles.removeIf(v -> v.getId().equals(id));
         if(removed){
             save();

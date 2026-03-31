@@ -11,8 +11,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("--- SYSTEM WYPOŻYCZALNI POJAZDÓW ---");
-        System.out.print("1.Rejestracja.\n");
-        System.out.print("2.Logowanie.\n");
+        System.out.print("1.Logowanie.\n");
+        System.out.print("2.Rejestracja.\n");
         System.out.print("Wybor: ");
         int choice = scanner.nextInt();
 
