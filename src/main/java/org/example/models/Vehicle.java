@@ -59,8 +59,8 @@ public class Vehicle implements Serializable{
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(String.format("[%s] %s %s (%d) | Rejestracja: %s| Cena: %.2f zł",
-                category, brand, model, year, plate, price));
+        builder.append(String.format("[%s] %s %s %s (%d) | Rejestracja: %s| Cena: %.2f zł",
+                category, id, brand, model, year, plate, price));
         if(attributes!=null && !attributes.isEmpty()) {
             builder.append("|Dodatki:").append(attributes);
         }
