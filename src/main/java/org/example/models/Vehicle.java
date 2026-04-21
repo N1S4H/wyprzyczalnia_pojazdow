@@ -44,7 +44,7 @@ public class Vehicle implements Serializable{
         if(attributes == null) return null;
         return attributes.get(attributeName);
     }
-    public void addAtribute(String key, Object value) {
+    public void addAttribute(String key, Object value) {
         if(this.attributes == null){
             this.attributes = new HashMap<>();
         }
