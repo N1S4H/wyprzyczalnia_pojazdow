@@ -130,7 +130,8 @@ public class UI {
         System.out.println("2. Dodaj nowy pojazd");
         System.out.println("3. Usuń pojazd");
         System.out.println("4. Lista wszystkich wypożyczeń");
-        System.out.println("5. Usuń użytkownika");
+        System.out.println("5. Lista wszystkich użytkowników"); // NOWA OPCJA
+        System.out.println("6. Usuń użytkownika"); // Zmiana numerku
         System.out.println("0. Wyloguj");
         System.out.print("Wybór: ");
 
@@ -140,7 +141,8 @@ public class UI {
             case "2" -> addVehicleAction();
             case "3" -> deleteVehicleAction();
             case "4" -> rentalService.findAllRentals().forEach(System.out::println);
-            case "5" -> deleteUserAction(adminUser);
+            case "5" -> showAllUsersAction(); // WYWOŁANIE NOWEJ METODY
+            case "6" -> deleteUserAction(adminUser);
             case "0" -> { return false; }
             default -> System.out.println("Nieprawidłowy wybór.");
         }
@@ -222,5 +224,25 @@ public class UI {
         } catch (Exception e) {
             System.out.println("Błąd: " + e.getMessage());
         }
+    }
+
+    private void showAllUsersAction() {
+        System.out.println("\n--- LISTA UŻYTKOWNIKÓW ---");
+        var users = userService.findAllUsers();
+
+        if (users.isEmpty()) {
+            System.out.println("Brak użytkowników w bazie.");
+            return;
+        }
+
+        users.forEach(user -> {
+            System.out.println("ID: " + user.getId() + " | Login: " + user.getLogin() + " | Rola: " + user.getRole());
+
+            rentalService.findActiveRentalByUserId(user.getId()).ifPresentOrElse(
+                    rental -> System.out.println("   -> [Aktywne wypożyczenie auta ID: " + rental.getVehicleId() + "]"),
+                    () -> System.out.println("   -> [Brak aktywnych wypożyczeń]")
+            );
+            System.out.println("--------------------------------------------------");
+        });
     }
 }
