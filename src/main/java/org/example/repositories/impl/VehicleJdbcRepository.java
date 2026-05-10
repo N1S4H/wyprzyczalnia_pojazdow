@@ -88,7 +88,7 @@ public class VehicleJdbcRepository implements VehicleRepository {
                 ON CONFLICT (id) DO UPDATE SET
                     brand = EXCLUDED.brand,
                     model = EXCLUDED.model,
-                    year = EXCLUDED.year,
+                    year = EXCLUDED.year, 
                     plate = EXCLUDED.plate,
                     price = EXCLUDED.price,
                     category = EXCLUDED.category,
