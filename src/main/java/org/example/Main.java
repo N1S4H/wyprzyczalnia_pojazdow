@@ -12,17 +12,16 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String mode = (args.length > 0) ? args[0].toLowerCase() : "json";
-        System.out.println("Wybierz tryb: " + mode.toUpperCase());
+        boolean jdbc = true;
 
         VehicleRepository vehicleRepo;
         UserRepository userRepo;
         RentalRepository rentalRepo;
 
-        if ("jdbc".equals(mode)) {
+        if (jdbc) {
             String dbUrl = System.getenv("DB_URL");
             if (dbUrl == null || dbUrl.isEmpty()) {
-                throw new RuntimeException("Brak zmiennej środowiskowej DB_URL! Skonfiguruj ją w IDE.");
+                throw new RuntimeException("Brak zmiennej środowiskowej DB_URL!");
             }
             vehicleRepo = new VehicleJdbcRepository();
             userRepo = new UserJdbcRepository();
