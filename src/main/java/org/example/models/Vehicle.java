@@ -1,29 +1,70 @@
 package org.example.models;
 
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Type;
 
 import java.util.Map;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@EqualsAndHashCode(of = "id")
+@ToString
+@Entity
+@Table(name = "vehicle")
 
-public class Vehicle implements Serializable{
+public class Vehicle{
+
+    @Id
+    @Column(nullable = false, unique = true)
     private String id;
+
     private String category;
     private String brand;
     private String model;
     private int year;
     private String plate;
+
+    @Column(columnDefinition = "NUMERIC")
     private double price;
+
+    @Type(JsonBinaryType.class)
+    @Column(columnDefinition = "jsonb")
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Map<String, Object> attributes;
 
+    @Builder
+    public Vehicle(String id, String category, String brand, String model, int year, String plate, double price, Map<String, Object> attributes){
+        this.id = id;
+        this.category = category;
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.plate = plate;
+        this.price = price;
+        this.attributes = attributes == null ? new HashMap<>(): new HashMap<>(attributes);
+    }
+
+    public Map<String,Object> getAttributes() {
+        return Collections.unmodifiableMap(attributes);
+    }
+    public Object getAttribute(String attributeName) {
+        return attributes.get(attributeName);
+    }
+    public void addAttribute(String key, Object value) {
+        this.attributes.put(key, value);
+    }
+    public void removeAttribute(String key) {
+        attributes.remove(key);
+    }
 
     public Vehicle copy() {
         return Vehicle.builder().id(this.id)
@@ -37,24 +78,6 @@ public class Vehicle implements Serializable{
                 .build();
     }
 
-    public Map<String,Object> getAttributes() {
-        return attributes != null? Collections.unmodifiableMap(attributes):Collections.emptyMap();
-    }
-    public Object getAttribute(String attributeName) {
-        if(attributes == null) return null;
-        return attributes.get(attributeName);
-    }
-    public void addAttribute(String key, Object value) {
-        if(this.attributes == null){
-            this.attributes = new HashMap<>();
-        }
-        this.attributes.put(key, value);
-    }
-    public void removeAtribute(String key) {
-        if(attributes != null){
-            this.attributes.remove(key);
-        }
-    }
 
     @Override
     public String toString() {
