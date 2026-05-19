@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 
-public class HybernateConfig{
+public class HibernateConfig {
 
     @Getter
     private static final SessionFactory sessionFactory;
@@ -36,6 +36,6 @@ public class HybernateConfig{
         }
     }
 
-    private HybernateConfig(){
+    private HibernateConfig(){
     }
 }

@@ -1,8 +1,10 @@
 package org.example.repositories.impl;
 
+import org.example.db.HibernateConfig;
 import org.example.models.User;
 import org.example.repositories.UserRepository;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.List;
@@ -17,36 +19,66 @@ public class UserHibernateRepository implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return session.createQuery("FROM User", User.class).list();
+        if (session != null && session.isOpen()) {
+            return session.createQuery("FROM User", User.class).list();
+        }
+        try (Session s = HibernateConfig.getSessionFactory().openSession()) {
+            return s.createQuery("FROM User", User.class).list();
+        }
     }
 
     @Override
     public Optional<User> findById(String id) {
-        return Optional.ofNullable(session.get(User.class, id));
+        if (session != null && session.isOpen()) {
+            return Optional.ofNullable(session.get(User.class, id));
+        }
+        try (Session s = HibernateConfig.getSessionFactory().openSession()) {
+            return Optional.ofNullable(s.get(User.class, id));
+        }
     }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        Query<User> query = session.createQuery("""
-                FROM User u
-                WHERE u.login = :login
-                """, User.class);
-        query.setParameter("login", login);
-
-        return query.uniqueResultOptional();
+        String hql = "FROM User u WHERE u.login = :login";
+        if (session != null && session.isOpen()) {
+            Query<User> query = session.createQuery(hql, User.class);
+            query.setParameter("login", login);
+            return query.uniqueResultOptional();
+        }
+        try (Session s = HibernateConfig.getSessionFactory().openSession()) {
+            Query<User> query = s.createQuery(hql, User.class);
+            query.setParameter("login", login);
+            return query.uniqueResultOptional();
+        }
     }
 
     @Override
     public User save(User user) {
-        return session.merge(user);
+        if (session != null && session.isOpen()) {
+            return session.merge(user);
+        }
+        try (Session s = HibernateConfig.getSessionFactory().openSession()) {
+            Transaction tx = s.beginTransaction();
+            User merged = s.merge(user);
+            tx.commit();
+            return merged;
+        }
     }
 
     @Override
     public void deleteById(String id) {
-        User user = session.get(User.class, id);
-
-        if(user != null) {
-            session.remove(user);
+        if (session != null && session.isOpen()) {
+            User user = session.get(User.class, id);
+            if (user != null) session.remove(user);
+            return;
+        }
+        try (Session s = HibernateConfig.getSessionFactory().openSession()) {
+            Transaction tx = s.beginTransaction();
+            User user = s.get(User.class, id);
+            if (user != null) {
+                s.remove(user);
+            }
+            tx.commit();
         }
     }
 }

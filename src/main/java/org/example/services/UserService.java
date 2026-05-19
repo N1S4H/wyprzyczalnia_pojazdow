@@ -6,7 +6,7 @@ import java.util.List;
 
 public class UserService {
     private final UserRepository userRepository;
-    private final RentalService rentalService;
+    private final RentalServiceInterface rentalService;
 
     public UserService(UserRepository userRepository, RentalService rentalService) {
         this.userRepository = userRepository;

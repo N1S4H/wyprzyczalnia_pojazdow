@@ -1,6 +1,8 @@
 package org.example.services;
 
 import org.example.models.Rental;
+import org.example.models.User;
+import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
 
@@ -10,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class RentalService {
+public class RentalService implements RentalServiceInterface{
     private final RentalRepository rentalRepository;
     private final VehicleRepository vehicleRepository;
 
@@ -19,7 +21,7 @@ public class RentalService {
         this.vehicleRepository = vehicleRepository;
     }
 
-    public void rentVehicle(String userId, String vehicleId) {
+    public Rental rentVehicle(String userId, String vehicleId) {
         vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu o podanym ID."));
 
@@ -33,20 +35,22 @@ public class RentalService {
 
         Rental rental = Rental.builder()
                 .id(UUID.randomUUID().toString())
-                .userId(userId)
-                .vehicleId(vehicleId)
+                .user(User.builder().id(userId).build())
+                .vehicle(Vehicle.builder().id(vehicleId).build())
                 .rentDateTime(LocalDateTime.now().toString())
                 .build();
 
         rentalRepository.save(rental);
+        return rental;
     }
 
-    public void returnVehicle(String userId) {
+    public Rental returnVehicle(String userId) {
         Rental activeRental = findActiveRentalByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException("Nie posiadasz aktualnie żadnego wypożyczonego pojazdu."));
 
         activeRental.setReturnDateTime(LocalDateTime.now().toString());
         rentalRepository.save(activeRental);
+        return activeRental;
     }
 
     public boolean vehicleHasActiveRental(String vehicleId) {
@@ -68,4 +72,15 @@ public class RentalService {
     public List<Rental> findAllRentals() {
         return rentalRepository.findAll();
     }
+
+    @Override
+    public List<Rental> fingUserRentals(String userId) {
+        return List.of();
+    }
+
+    @Override
+    public boolean userHasActiveRental(String userId) {
+        return false;
+    }
+
 }

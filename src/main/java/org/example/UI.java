@@ -8,12 +8,12 @@ import java.util.Scanner;
 public class UI {
     private final AuthService authService;
     private final VehicleService vehicleService;
-    private final RentalService rentalService;
+    private final RentalServiceInterface rentalService;
     private final UserService userService;
     private final VehicleCategoryConfigService configService;
     private final Scanner scanner;
 
-    public UI(AuthService authService, VehicleService vehicleService, RentalService rentalService, UserService userService, VehicleCategoryConfigService configService) {
+    public UI(AuthService authService, VehicleService vehicleService, RentalServiceInterface rentalService, UserService userService, VehicleCategoryConfigService configService) {
         this.authService = authService;
         this.vehicleService = vehicleService;
         this.rentalService = rentalService;

@@ -23,7 +23,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String login;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "password", nullable = false)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
@@ -32,6 +32,11 @@ public class User {
 
 
     public User copy(){
-        return User.builder().id(id).login(login).passwordHash(passwordHash).role(role).build();
+        return User.builder()
+                .id(id).
+                login(login)
+                .passwordHash(passwordHash)
+                .role(role)
+                .build();
     }
 }
