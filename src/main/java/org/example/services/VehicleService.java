@@ -7,7 +7,9 @@ import org.example.repositories.VehicleRepository;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
+@Service
 public class VehicleService {
     private final VehicleRepository vehicleRepository;
     private final RentalRepository rentalRepository;

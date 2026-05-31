@@ -1,0 +1,8 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+  datasource:
+    url: jdbc:postgresql://ep-proud-dust-al4ip0ss.c-3.eu-central-1.aws.neon.tech/neondb?user=neondb_owner&password=npg_kc1vLHt0EMXN&sslmode=require&ssl=true
+    driver-class-name: org.postgresql.Driver

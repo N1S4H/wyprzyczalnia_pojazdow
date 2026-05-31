@@ -3,7 +3,9 @@ package org.example.services;
 import org.example.models.VehicleCategoryConfig;
 import org.example.repositories.VehicleCategoryConfigRepository;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class VehicleCategoryConfigService {
     private final VehicleCategoryConfigRepository repository;
 

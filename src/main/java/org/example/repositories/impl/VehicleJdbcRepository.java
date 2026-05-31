@@ -7,23 +7,39 @@ import org.example.models.Role;
 import org.example.models.User;
 import org.example.models.Vehicle;
 import org.example.repositories.VehicleRepository;
+import org.hibernate.engine.transaction.jta.platform.internal.OC4JJtaPlatform;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+
+@Repository
+@Profile("jdbc")
 public class VehicleJdbcRepository implements VehicleRepository {
     private final Gson gson = new Gson();
+    private final Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+    private final DataSource dataSource;
+
+    public VehicleJdbcRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public List<Vehicle> findAll() {
         List<Vehicle> list = new ArrayList<>();
-        String sql = "SELECT * FROM vehicle";
+        String sql = "SELECT id, category, brand, model, year, plate, price, attributes FROM vehicle";
 
-        try(Connection conn = JdbcConnectionManager.getInstance().getConection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+
+        try(PreparedStatement pstmt = connection.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery()){
 
             while (rs.next()){
@@ -44,6 +60,8 @@ public class VehicleJdbcRepository implements VehicleRepository {
             }
         }catch (SQLException e){
             throw new RuntimeException("Blad odczytu pojazdow", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return list;
     }
@@ -52,8 +70,9 @@ public class VehicleJdbcRepository implements VehicleRepository {
     public Optional<Vehicle> findById(String id) {
         String sql = "SELECT * FROM vehicle WHERE id = ?";
 
-        try(Connection conn = JdbcConnectionManager.getInstance().getConection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+
+        try(PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setString(1, id);
             try(ResultSet rs = pstmt.executeQuery()){
@@ -76,6 +95,8 @@ public class VehicleJdbcRepository implements VehicleRepository {
             }
         }catch (SQLException e){
             throw new RuntimeException("blad odczytu pojazdu", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return Optional.empty();
     }
@@ -95,8 +116,9 @@ public class VehicleJdbcRepository implements VehicleRepository {
                     attributes = EXCLUDED.attributes;
                 """;
 
-        try(Connection conn = JdbcConnectionManager.getInstance().getConection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+
+        try(PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             pstmt.setString(1, vehicle.getId());
             pstmt.setString(2, vehicle.getBrand());
@@ -111,18 +133,24 @@ public class VehicleJdbcRepository implements VehicleRepository {
             return vehicle;
         } catch (SQLException e){
             throw new RuntimeException("Blad zapisu pojazdu: " + e.getMessage(), e);
+        }finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public void deleteById(String id) {
         String sql = "DELETE FROM vehicle WHERE id = ?";
-        try(Connection conn = JdbcConnectionManager.getInstance().getConection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
+
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try(PreparedStatement pstmt = connection.prepareStatement(sql)){
             pstmt.setString(1, id);
             pstmt.executeUpdate();
         }catch (SQLException e){
             throw new RuntimeException("Blad usuwania pojazu", e);
+        }finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
+
 }

@@ -3,7 +3,9 @@ package org.example.services;
 import org.example.models.User;
 import org.example.repositories.UserRepository;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
     private final UserRepository userRepository;
     private final RentalServiceInterface rentalService;

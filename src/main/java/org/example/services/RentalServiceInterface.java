@@ -10,7 +10,8 @@ public interface RentalServiceInterface {
     Rental returnVehicle(String userId);
     Optional<Rental> findActiveRentalByUserId(String userId);
     List<Rental> findAllRentals();
-    List<Rental> fingUserRentals(String userId);
+    List<Rental> findUserRentals(String userId);
     boolean userHasActiveRental(String userId);
     boolean vehicleHasActiveRental(String vehicleId);
+
 }
