@@ -6,6 +6,7 @@ import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.UserRepository;
 import org.example.repositories.VehicleRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
@@ -25,7 +26,7 @@ public class RentalJdbcRepository implements RentalRepository {
     private final UserRepository userRepository;
     private final VehicleRepository vehicleRepository;
 
-    public RentalJdbcRepository(DataSource dataSource, UserRepository userRepository, VehicleRepository vehicleRepository) {
+    public RentalJdbcRepository(DataSource dataSource, @Qualifier("userJdbcRepository") UserRepository userRepository, @Qualifier("userJdbcRepository")VehicleRepository vehicleRepository) {
         this.dataSource = dataSource;
         this.userRepository = userRepository;
         this.vehicleRepository = vehicleRepository;
