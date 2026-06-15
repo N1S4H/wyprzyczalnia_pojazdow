@@ -1,3 +1,15 @@
 spring:
   profiles:
-    active: ${APP_PROFILE:jdbc}
+    active: ${APP_PROFILE:json}
+  main:
+    banner-mode: off
+
+server:
+  port: ${PORT:8080}
+
+carrent:
+  json:
+    users-file: users.json
+    vehicles-file: vehicles.json
+    rentals-file: rentals.json
+    categories-file: categories.json
