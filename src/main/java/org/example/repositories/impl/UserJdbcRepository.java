@@ -4,6 +4,7 @@ import org.example.models.Role;
 import org.example.models.User;
 import org.example.repositories.UserRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
