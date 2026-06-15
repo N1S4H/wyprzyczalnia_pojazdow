@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: hibernate
+    active: ${APP_PROFILE:hibernate}
   application:
     name: carrent
 
