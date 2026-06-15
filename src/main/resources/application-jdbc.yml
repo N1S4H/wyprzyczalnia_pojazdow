@@ -1,4 +1,4 @@
 spring:
   datasource:
-    url: ${DB_CONNECT_URL}
+    url: ${DB_URL}
     driver-class-name: org.postgresql.Driver
