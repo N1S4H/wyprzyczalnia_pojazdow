@@ -33,7 +33,7 @@ public class UserJdbcRepository implements UserRepository{
 
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery(sql)){
+             ResultSet rs = stmt.executeQuery()){
             while(rs.next()){
                 users.add(User.builder()
                         .id(rs.getString("id"))
