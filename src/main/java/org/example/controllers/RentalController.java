@@ -1,7 +1,14 @@
 package org.example.controllers;
 
+import org.example.dto.RentalRequest;
 import org.example.models.Rental;
+import org.example.models.User;
+import org.example.repositories.impl.UserJdbcRepository;
 import org.example.services.RentalServiceInterface;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +18,11 @@ import java.util.List;
 public class RentalController {
 
     private final RentalServiceInterface rentalService;
+    private final UserJdbcRepository userRepository;
 
-    public RentalController(RentalServiceInterface rentalService) {
+    public RentalController(RentalServiceInterface rentalService, UserJdbcRepository userRepository) {
         this.rentalService = rentalService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -26,13 +35,30 @@ public class RentalController {
         return rentalService.findUserRentals(userId);
     }
 
-    @PostMapping("/users/{userId}/rent/{vehicleId}")
-    public Rental rent(@PathVariable String userId, @PathVariable String vehicleId) {
-        return rentalService.rentVehicle(userId, vehicleId);
+    @PostMapping("/rent")
+    public ResponseEntity<Rental> rent(
+            @RequestBody RentalRequest rentalRequest,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+
+        String login = userDetails.getUsername();
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+
+        Rental rental = rentalService.rentVehicle(user.getId(), rentalRequest.vehicleId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(rental);
     }
 
-    @PostMapping("/users/{userId}/return")
-    public Rental returnVehicle(@PathVariable String userId) {
-        return rentalService.returnVehicle(userId);
+    @PostMapping("/return")
+    public ResponseEntity<Rental> returnVehicle(@AuthenticationPrincipal UserDetails userDetails) {
+
+        String login = userDetails.getUsername();
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+
+        Rental rental = rentalService.returnVehicle(user.getId());
+
+        return ResponseEntity.ok(rental);
     }
 }
