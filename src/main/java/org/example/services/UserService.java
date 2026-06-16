@@ -4,13 +4,15 @@ import org.example.models.User;
 import org.example.repositories.UserRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final RentalServiceInterface rentalService;
 
-    public UserService(UserRepository userRepository, RentalService rentalService) {
+    public UserService(UserRepository userRepository, RentalServiceInterface rentalService) {
         this.userRepository = userRepository;
         this.rentalService = rentalService;
     }

@@ -12,9 +12,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class RentalService implements RentalServiceInterface{
+@Transactional
+public class RentalService implements RentalServiceInterface {
     private final RentalRepository rentalRepository;
     private final VehicleRepository vehicleRepository;
 
@@ -55,29 +57,33 @@ public class RentalService implements RentalServiceInterface{
         return activeRental;
     }
 
+    @Transactional(readOnly = true)
     public boolean vehicleHasActiveRental(String vehicleId) {
         return rentalRepository.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Rental> findActiveRentalByUserId(String userId) {
         return rentalRepository.findAll().stream()
                 .filter(r -> r.getUserId().equals(userId) && r.getReturnDateTime() == null)
                 .findFirst();
     }
 
+    @Transactional(readOnly = true)
     public List<Rental> findUserRentals(String userId) {
         return rentalRepository.findAll().stream()
                 .filter(r -> r.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Rental> findAllRentals() {
         return rentalRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean userHasActiveRental(String userId) {
-        return false;
+        return findActiveRentalByUserId(userId).isPresent();
     }
-
 }
