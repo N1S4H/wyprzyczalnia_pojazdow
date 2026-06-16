@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Profile("json")
+@Profile({"json", "jdbc", "jpa"})
 public class VehicleCategoryConfigJsonRepository implements VehicleCategoryConfigRepository {
 
     private final JsonFileStorage<VehicleCategoryConfig> storage;
