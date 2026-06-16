@@ -1,6 +1,7 @@
 package org.example.db;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.*;
@@ -11,9 +12,9 @@ public class JsonFileStorage<T> {
 
     private final Gson gson = new Gson();
     private final Path path;
-    private final Type type;
+    private final Class<T> type;
 
-    public JsonFileStorage(String filename, Type type) {
+    public JsonFileStorage(String filename, Class<T> type) {
         this.path = Paths.get(filename);
         this.type = type;
     }
@@ -22,7 +23,10 @@ public class JsonFileStorage<T> {
         if (!Files.exists(path)) return new ArrayList<>();
         try {
             String json = Files.readString(path);
-            List<T> list = gson.fromJson(json, type);
+
+            Type listType = TypeToken.getParameterized(ArrayList.class, type).getType();
+
+            List<T> list = gson.fromJson(json, listType);
             return list != null ? list : new ArrayList<>();
         } catch (IOException e) {
             e.printStackTrace();
