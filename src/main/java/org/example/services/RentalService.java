@@ -60,6 +60,17 @@ public class RentalService implements RentalServiceInterface {
 
         activeRental.setReturnDateTime(LocalDateTime.now().toString());
         rentalRepository.save(activeRental);
+
+        if (activeRental.getUser() != null) {
+            userRepository.findById(activeRental.getUser().getId())
+                    .ifPresent(activeRental::setUser);
+        }
+
+        if (activeRental.getVehicle() != null) {
+            vehicleRepository.findById(activeRental.getVehicle().getId())
+                    .ifPresent(activeRental::setVehicle);
+        }
+
         return activeRental;
     }
 
