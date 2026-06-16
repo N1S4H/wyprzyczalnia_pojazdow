@@ -18,7 +18,7 @@ public class VehicleCategoryConfigJsonRepository implements VehicleCategoryConfi
     private final JsonFileStorage<VehicleCategoryConfig> storage;
     private final List<VehicleCategoryConfig> configs;
 
-    public VehicleCategoryConfigJsonRepository(@Value("${carrent.json.categories-file}") String filename) {
+    public VehicleCategoryConfigJsonRepository(@Value("${carrent.json.categories-file:categories.json}") String filename) {
         this.storage = new JsonFileStorage<>(filename, VehicleCategoryConfig.class);
 
         List<VehicleCategoryConfig> loaded = storage.load();
