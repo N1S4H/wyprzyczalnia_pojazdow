@@ -26,7 +26,7 @@ public class RentalService implements RentalServiceInterface {
     }
 
     public Rental rentVehicle(String userId, String vehicleId) {
-        vehicleRepository.findById(vehicleId)
+        Vehicle foundVehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu o podanym ID."));
 
         if (vehicleHasActiveRental(vehicleId)) {
@@ -40,7 +40,7 @@ public class RentalService implements RentalServiceInterface {
         Rental rental = Rental.builder()
                 .id(UUID.randomUUID().toString())
                 .user(User.builder().id(userId).build())
-                .vehicle(Vehicle.builder().id(vehicleId).build())
+                .vehicle(foundVehicle)
                 .rentDateTime(LocalDateTime.now().toString())
                 .build();
 
