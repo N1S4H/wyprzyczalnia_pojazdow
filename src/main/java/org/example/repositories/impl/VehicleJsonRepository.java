@@ -3,18 +3,23 @@ package org.example.repositories.impl;
 import org.example.db.JsonFileStorage;
 import org.example.models.Vehicle;
 import org.example.repositories.VehicleRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Repository
+@Profile("json")
 public class VehicleJsonRepository implements VehicleRepository {
     private final JsonFileStorage<Vehicle> storage;
     private final List<Vehicle> vehicles;
 
-    public VehicleJsonRepository(JsonFileStorage<Vehicle> storage) {
-        this.storage = storage;
+    public VehicleJsonRepository(@Value("${carrent.json.vehicles-file}") String filename) {
+        this.storage = new JsonFileStorage<>(filename, Vehicle.class);
         List<Vehicle> loadedData = storage.load();
         this.vehicles = (loadedData != null) ? loadedData : new ArrayList<>();
     }

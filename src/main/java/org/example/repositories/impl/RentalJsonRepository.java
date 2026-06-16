@@ -3,18 +3,23 @@ package org.example.repositories.impl;
 import org.example.db.JsonFileStorage;
 import org.example.models.Rental;
 import org.example.repositories.RentalRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Repository
+@Profile("json")
 public class RentalJsonRepository implements RentalRepository {
     private final JsonFileStorage<Rental> storage;
     private final List<Rental> rentals;
 
-    public RentalJsonRepository(JsonFileStorage<Rental> storage) {
-        this.storage = storage;
+    public RentalJsonRepository(@Value("${carrent.json.rentals-file}") String filename) {
+        this.storage = new JsonFileStorage<>(filename, Rental.class);
         List<Rental> loadedData = storage.load();
         this.rentals = (loadedData != null) ? loadedData : new ArrayList<>();
     }
