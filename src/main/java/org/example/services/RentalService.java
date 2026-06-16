@@ -4,6 +4,7 @@ import org.example.models.Rental;
 import org.example.models.User;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
+import org.example.repositories.UserRepository;
 import org.example.repositories.VehicleRepository;
 
 import java.time.LocalDateTime;
@@ -19,15 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class RentalService implements RentalServiceInterface {
     private final RentalRepository rentalRepository;
     private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
 
-    public RentalService(RentalRepository rentalRepository, VehicleRepository vehicleRepository) {
+    public RentalService(RentalRepository rentalRepository, VehicleRepository vehicleRepository, UserRepository userRepository) {
         this.rentalRepository = rentalRepository;
         this.vehicleRepository = vehicleRepository;
+        this.userRepository = userRepository;
     }
 
     public Rental rentVehicle(String userId, String vehicleId) {
         Vehicle foundVehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu o podanym ID."));
+
+        User foundUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika o podanym ID."));
 
         if (vehicleHasActiveRental(vehicleId)) {
             throw new IllegalStateException("Ten pojazd jest już wypożyczony przez kogoś innego.");
@@ -39,7 +45,7 @@ public class RentalService implements RentalServiceInterface {
 
         Rental rental = Rental.builder()
                 .id(UUID.randomUUID().toString())
-                .user(User.builder().id(userId).build())
+                .user(foundUser)
                 .vehicle(foundVehicle)
                 .rentDateTime(LocalDateTime.now().toString())
                 .build();
